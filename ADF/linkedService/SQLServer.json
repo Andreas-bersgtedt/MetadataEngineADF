@@ -1,0 +1,37 @@
+{
+	"name": "SQLServer",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "Generic SQL Server Driver with SQL Server Authentication  ..",
+		"parameters": {
+			"kvsecretname": {
+				"type": "string"
+			},
+			"sqlusername": {
+				"type": "String"
+			},
+			"SqlServerName": {
+				"type": "String"
+			},
+			"SqlDatabaseName": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Data Source=@{linkedService().SqlServerName};Initial Catalog=@{linkedService().SqlDatabaseName};User ID=@{linkedService().sqlusername}",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault1",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": {
+					"value": "@linkedService().kvsecretname",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}
