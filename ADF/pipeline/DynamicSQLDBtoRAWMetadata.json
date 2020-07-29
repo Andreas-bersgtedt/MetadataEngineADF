@@ -148,7 +148,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Parquet1",
+						"referenceName": "metadatacontainer",
 						"type": "DatasetReference"
 					}
 				]
