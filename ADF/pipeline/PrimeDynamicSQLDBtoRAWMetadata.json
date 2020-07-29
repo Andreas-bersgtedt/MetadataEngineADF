@@ -99,6 +99,14 @@
 				}
 			}
 		],
+		"parameters": {
+			"DataSetType": {
+				"type": "string"
+			},
+			"RunGroupCode": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "RMDBS_Pipelines"
 		},
