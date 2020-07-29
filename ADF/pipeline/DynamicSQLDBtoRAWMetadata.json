@@ -115,7 +115,7 @@
 				}
 			},
 			{
-				"name": "Copy data1",
+				"name": "Stage Metadata",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -298,11 +298,11 @@
 				]
 			},
 			{
-				"name": "Delete1",
+				"name": "Delete Processed Files",
 				"type": "Delete",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "Stage Metadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
