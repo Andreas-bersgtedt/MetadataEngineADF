@@ -241,7 +241,7 @@
 				]
 			},
 			{
-				"name": "Delete1",
+				"name": "DeleteAllMEDatasetFiles",
 				"type": "Delete",
 				"dependsOn": [
 					{
