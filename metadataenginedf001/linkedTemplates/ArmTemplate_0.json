@@ -129,6 +129,24 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/MetadataEngineIngestionDataset')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Metadataengine",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Metadataengine')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ParquetFile')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -222,24 +240,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/SQLServer')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/MetadataEngineIngestionDataset')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "Metadataengine",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SqlServerTable",
-				"schema": [],
-				"typeProperties": {}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/Metadataengine')]"
 			]
 		},
 		{
@@ -347,6 +347,108 @@
 				"typeProperties": {
 					"schema": "ME_Config",
 					"table": "DataSet"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/Metadataengine')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/metadatacontainer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MetadataLake",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"folderPath": "inbound",
+						"fileSystem": "metadata"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MetadataLake')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MetadataEntityStage')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "Metadataengine",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SqlServerTable",
+				"schema": [
+					{
+						"name": "MetadataQuerySource",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataEntityName",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataSchemaName",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataObjectName",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataObjectType",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataObjectlength",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataObjectPrecision",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataObjectScale",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataObjectCollation",
+						"type": "varchar"
+					},
+					{
+						"name": "DataSetID",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataObjectOrder",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "MetadataObjectIdentityFlag",
+						"type": "varchar"
+					},
+					{
+						"name": "MetadataObjectRefreshUTCTimeStamp",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "ME_Data",
+					"table": "MetadataEntityStage"
 				}
 			},
 			"dependsOn": [
@@ -759,6 +861,224 @@
 								}
 							]
 						}
+					},
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "FE_Execute_SQL_Pipeline",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFolderPath": "inbound",
+									"wildcardFileName": "*.parquet",
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "SqlServerSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "MetadataQuerySource",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataQuerySource",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataEntityName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataEntityName",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataSchemaName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataSchemaName",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataObjectName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataObjectName",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataObjectType",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataObjectType",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataObjectlength",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataObjectlength",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataObjectPrecision",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataObjectPrecision",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataObjectScale",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataObjectScale",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataObjectCollation",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataObjectCollation",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DataSetID",
+											"type": "String"
+										},
+										"sink": {
+											"name": "DataSetID",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataObjectOrder",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "MetadataObjectOrder",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataObjectIdentityFlag",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MetadataObjectIdentityFlag",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MetadataObjectRefreshUTCTimeStamp",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "MetadataObjectRefreshUTCTimeStamp",
+											"type": "DateTime"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "metadatacontainer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "MetadataEntityStage",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Delete1",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "metadatacontainer",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobFSReadSettings",
+								"recursive": true,
+								"wildcardFileName": "*.parquet"
+							}
+						}
 					}
 				],
 				"parameters": {
@@ -776,6 +1096,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/MetadataEngineIngestionDataset')]",
+				"[concat(variables('factoryId'), '/datasets/metadatacontainer')]",
+				"[concat(variables('factoryId'), '/datasets/MetadataEntityStage')]",
 				"[concat(variables('factoryId'), '/pipelines/SQLtoParquet')]"
 			]
 		},
