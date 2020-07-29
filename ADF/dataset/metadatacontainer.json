@@ -1,5 +1,5 @@
 {
-	"name": "Parquet1",
+	"name": "metadatacontainer",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "MetadataLake",
