@@ -1,0 +1,12 @@
+{
+	"name": "MetadataEngineIngestionDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Metadataengine",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
