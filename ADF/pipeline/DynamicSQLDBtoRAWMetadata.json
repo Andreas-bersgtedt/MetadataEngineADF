@@ -144,14 +144,190 @@
 							"enablePartitionDiscovery": false
 						}
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "SqlServerSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "MetadataQuerySource",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataQuerySource",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataEntityName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataEntityName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataSchemaName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataSchemaName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataObjectName",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataObjectName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataObjectType",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataObjectType",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataObjectlength",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataObjectlength",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataObjectPrecision",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataObjectPrecision",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataObjectScale",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataObjectScale",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataObjectCollation",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataObjectCollation",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DataSetID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DataSetID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataObjectOrder",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "MetadataObjectOrder",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataObjectIdentityFlag",
+									"type": "String"
+								},
+								"sink": {
+									"name": "MetadataObjectIdentityFlag",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MetadataObjectRefreshUTCTimeStamp",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "MetadataObjectRefreshUTCTimeStamp",
+									"type": "DateTime"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "metadatacontainer",
 						"type": "DatasetReference"
 					}
+				],
+				"outputs": [
+					{
+						"referenceName": "MetadataEntityStage",
+						"type": "DatasetReference"
+					}
 				]
+			},
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "metadatacontainer",
+						"type": "DatasetReference"
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"wildcardFileName": "/inbound/"
+					}
+				}
 			}
 		],
 		"parameters": {
