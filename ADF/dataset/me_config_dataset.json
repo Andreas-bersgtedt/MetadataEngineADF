@@ -1,0 +1,49 @@
+{
+	"name": "me_config_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "MetadataLake",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "me_config_dataset",
+				"fileSystem": "metadata"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "DataSetType",
+				"type": "UTF8"
+			},
+			{
+				"name": "RunGroupCode",
+				"type": "UTF8"
+			},
+			{
+				"name": "DataSetName",
+				"type": "UTF8"
+			},
+			{
+				"name": "SchemaName",
+				"type": "UTF8"
+			},
+			{
+				"name": "TargetLake",
+				"type": "UTF8"
+			},
+			{
+				"name": "ConnectionId",
+				"type": "UTF8"
+			},
+			{
+				"name": "IsEnabled",
+				"type": "INT32"
+			}
+		]
+	}
+}
