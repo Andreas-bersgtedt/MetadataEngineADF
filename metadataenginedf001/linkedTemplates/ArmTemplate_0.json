@@ -690,7 +690,7 @@
 						"typeProperties": {
 							"source": {
 								"type": "SqlServerSource",
-								"sqlReaderQuery": "SELECT SQLQuery=REPLACE('\nSELECT [DataSetType]=¬MSSQL¬,[RunGroupCode]=¬999¬,[DataSetName]=T.name,[SchemaName]=s.name\n,[TargetLake]=¬RAW¬,[ConnectionId]=¬'+CONVERT(VARCHAR(20),C.iD)+'¬\n,[IsEnabled]=0\nFROM sys.tables t inner join sys.schemas s on t.schema_id=s.schema_id','¬','''')\n  ,[DataSetType]='MSSQL', \n\t\tDBServerName=C.[ConnectionString],\n\t\tDBName=C.[ConnectionName],\n\t\tSQLKVName=C.[ConnectionKVSecret]\n\t\t,SqlUserName=C.[ConnectionKVSecret]\n\t\t  ,DLContainer='metadata'\n\t  ,DLFolder='me_config_dataset'\n\t  ,DLFileName=LOWER(CONCAT(C.[ConnectionName],'_',C.[ConnectionKVSecret]))\n  FROM [ME_Config].[Connection] C\n  Where C.id not in (SELECT ConnectionId From [ME_Config].[DataSet])",
+								"sqlReaderQuery": "SELECT SQLQuery=REPLACE('\nSELECT [DataSetType]=¬MSSQL¬,[RunGroupCode]=¬999¬,[DataSetName]=T.name,[SchemaName]=s.name\n,[TargetLake]=¬RAW¬,[ConnectionId]=¬'+CONVERT(VARCHAR(20),C.iD)+'¬\n,[IsEnabled]=0\nFROM sys.tables t inner join sys.schemas s on t.schema_id=s.schema_id','¬','''')\n  ,[DataSetType]='MSSQL', \n\t\tDBServerName=C.[ConnectionString],\n\t\tDBName=C.[ConnectionName],\n\t\tSQLKVName=C.[ConnectionKVSecret]\n\t\t,SqlUserName=C.[ConnectionKVSecret]\n\t\t  ,DLContainer='metadata'\n\t  ,DLFolder='me_config_dataset'\n\t  ,DLFileName=LOWER(CONCAT(C.[ConnectionName],'_',C.[ConnectionKVSecret]))\n  FROM [ME_Config].[Connection] C\n  Where C.id not in (SELECT ConnectionId From [ME_Config].[DataSet])\n  and C.Connectiontype='MSSQL'",
 								"queryTimeout": "02:00:00"
 							},
 							"dataset": {
@@ -774,10 +774,12 @@
 				],
 				"parameters": {
 					"DataSetType": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "MSSQL"
 					},
 					"RunGroupCode": {
-						"type": "string"
+						"type": "string",
+						"defaultValue": "999"
 					}
 				},
 				"folder": {
