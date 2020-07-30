@@ -328,6 +328,42 @@
 						"wildcardFileName": "*.parquet"
 					}
 				}
+			},
+			{
+				"name": "Ingest_Metadata",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Delete Processed Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ME_Data].[sp_ProcessDynamicStagedMetadata]",
+					"storedProcedureParameters": {
+						"DataSetType": {
+							"value": {
+								"value": "@pipeline().parameters.DataSetType",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "Metadataengine",
+					"type": "LinkedServiceReference"
+				}
 			}
 		],
 		"parameters": {
