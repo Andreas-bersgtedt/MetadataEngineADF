@@ -2,6 +2,37 @@
 	"name": "Prepare Polybase DW Environment",
 	"properties": {
 		"description": "Prepare Polybase DW Environment",
+		"activities": [
+			{
+				"name": "GETKVSecret",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": true,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": {
+						"value": "@pipeline().parameters.KeyURL",
+						"type": "Expression"
+					},
+					"method": "GET",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"KeyURL": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "ManagementProcesses"
 		},
