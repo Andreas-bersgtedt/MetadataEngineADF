@@ -1,0 +1,10 @@
+{
+	"name": "Prepare Polybase DW Environment",
+	"properties": {
+		"description": "Prepare Polybase DW Environment",
+		"folder": {
+			"name": "ManagementProcesses"
+		},
+		"annotations": []
+	}
+}
